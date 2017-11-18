@@ -1,14 +1,21 @@
 # import libraries
 # coding: latin-1
 import urllib2
+import sys
 from bs4 import BeautifulSoup
 
 
 
-
+#input:
+# bird name
+# number of pages
+#
 def main():
+    # get name
+    name = sys.argv[1]+"_"+sys.argv[2];
+
     # specify the url
-    quote_page = "http://www.xeno-canto.org/species/Emberiza-rustica"
+    quote_page = sys.argv[3];
 
     # query the website and return the html to the variable ‘page’
     page = urllib2.urlopen(quote_page)
@@ -61,6 +68,7 @@ def main():
             j=j+1;
 
         i=1;
+    print length
 
 if __name__ == '__main__':
     main()
