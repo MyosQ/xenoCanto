@@ -39,6 +39,7 @@ def main():
         if i !=0:
 
             columns = row.find_all('td')
+
             length.append(columns[2].get_text())
             recordist.append(columns[3].get_text())
             date.append(columns[4].get_text())
@@ -68,7 +69,7 @@ def main():
             j=j+1;
 
         i=1;
-    print length
+    #print length
 
 if __name__ == '__main__':
     main()
