@@ -1,10 +1,14 @@
 #!/bin/bash
 
+# Given the birds first and secondName, this script echos
+# the url's to stdout and adds the specifications of each
+# recording to the database
+
 birdFirstName=$1 #Firstname
 birdSecondName=$2 #Secondname
 
 
-filename="$birdFirstName"_"$birdSecondName.txt"
+#filename="$birdFirstName"_"$birdSecondName.txt"
 
 # get number of pages
 numOfPages=`curl http://www.xeno-canto.org/species/$birdFirstName-$birdSecondName | grep "href=\"?pg" |\
@@ -14,12 +18,9 @@ numOfPages=`curl http://www.xeno-canto.org/species/$birdFirstName-$birdSecondNam
 baseName="www.xeno-canto.org"
 for page in `seq 1 $numOfPages`;
 do
-
    extensions=`curl http://www.xeno-canto.org/species/$birdFirstName-$birdSecondName?pg=$page \
    | grep download=* | cut -f 3 -d '<' | cut -f 3 -d '=' | cut -c 2- | rev | cut -c 3- | rev`
    extensions=(${extensions[@]})
-
-   #echo ${#extensions[@]}
 
    for i in `seq 1 ${#extensions[@]}`;
    do
@@ -28,9 +29,10 @@ do
    unset extensions
 done
 
-###
-###
 
+
+# This loop runs the python script scraping_birds for each page.
+# scraping_birds adds the recording specifications to the database
 for page in `seq 1 $numOfPages`;
 do
    url="http://www.xeno-canto.org/species/$birdFirstName-$birdSecondName?pg=$page"

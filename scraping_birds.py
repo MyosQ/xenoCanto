@@ -3,12 +3,20 @@
 import urllib2
 import sys
 from bs4 import BeautifulSoup
+import MySQLdb
+import re
+
+###
+conn = MySQLdb.connect(host= "localhost",
+                  user="root",
+                  passwd="password",
+                  db="birds")
+x = conn.cursor()
 
 
 
 #input:
-# bird name
-# number of pages
+# bird name url
 #
 def main():
     # get name
@@ -32,14 +40,16 @@ def main():
     # Entries of each row. Name is not needed (obviously)
     length = [];    recordist = []; date = [];  time = [];
     country = [];   location = [];  elevation= [];  song_type = [];
-    remarks = [];   quality = [];   category_nr = [];
+    remarks = [];   quality = [];   idNumber = [];
 
     i=0; j=0;
     for row in allRows:
         if i !=0:
 
+            # Get columns of this row
             columns = row.find_all('td')
 
+            # Extract the tet in each column
             length.append(columns[2].get_text())
             recordist.append(columns[3].get_text())
             date.append(columns[4].get_text())
@@ -49,10 +59,10 @@ def main():
             elevation.append(columns[8].get_text())
             song_type.append(columns[9].get_text())
             remarks.append(columns[10].get_text())
-            # qualty
-            category_nr.append(columns[12].get_text())
+            quality.append("")
+            idNumber.append(columns[12].get_text())
 
-            # Hoppar quality just nu för den är en class inte text!
+            # strip newLines and tabs
             length[j] = length[j].strip()
             country[j] = country[j].strip()
             remarks[j] = remarks[j].strip()
@@ -64,12 +74,42 @@ def main():
             elevation[j] = elevation[j].strip()
             song_type[j] = song_type[j].strip()
             remarks[j] = remarks[j].strip()
-            # quality ..
-            category_nr[j] = category_nr[j].strip()
-            j=j+1;
+            quality[j] = "";
+            idNumber[j] = idNumber[j].strip()
 
+            idNumber[j] = (re.findall("\d+", idNumber[j]))
+
+            remarks[j] = remarks[j].replace('\n', ' ').replace('\r', '')
+
+            print length[j]
+            print country[j]
+            print recordist[j]
+            print date[j]
+            print time[j]
+            print country[j]
+            print location[j]
+            print elevation[j]
+            print song_type[j]
+            print remarks[j]
+            print quality[j]
+            print idNumber[j][0]
+
+            try:
+                x.execute("""INSERT INTO emberiza_rustica columns (name, length, recordist, date, time, country, location, elevation, soundtype, remarks, quality, id) \
+                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                 (sys.argv[1]+"_"+sys.argv[2], length[j], recordist[j], date[j], time[j], country[j], location[j], elevation[j], song_type[j], remarks[j], quality[j], idNumber[j][0]))
+                conn.commit()
+            except TypeError as e:
+                print(e)
+                conn.rollback()
+                print "excetp!"
+
+            j=j+1;
+            break
         i=1;
-    #print length
+
+    conn.close()
+    return
 
 if __name__ == '__main__':
     main()
