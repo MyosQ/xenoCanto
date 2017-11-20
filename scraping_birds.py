@@ -5,6 +5,14 @@ import sys
 from bs4 import BeautifulSoup
 import MySQLdb
 import re
+import string
+
+
+###
+# To remove alpha chars from string
+all=string.maketrans('','')
+nodigs=all.translate(all, string.digits)
+
 
 ###
 conn = MySQLdb.connect(host= "localhost",
@@ -45,9 +53,15 @@ def main():
     i=0; j=0;
     for row in allRows:
         if i !=0:
-
+            toget_quality = [];
             # Get columns of this row
             columns = row.find_all('td')
+
+            # Gets all with class selected
+            get_quality = (row.find_all(lambda tag: tag.name == 'li' and tag.get('class') == ['selected']))
+
+            # Converts to string
+            x = str(get_quality[0])
 
             # Extract the tet in each column
             length.append(columns[2].get_text())
@@ -59,8 +73,8 @@ def main():
             elevation.append(columns[8].get_text())
             song_type.append(columns[9].get_text())
             remarks.append(columns[10].get_text())
-            quality.append("")
             idNumber.append(columns[12].get_text())
+
 
             # strip newLines and tabs
             length[j] = length[j].strip()
@@ -74,40 +88,32 @@ def main():
             elevation[j] = elevation[j].strip()
             song_type[j] = song_type[j].strip()
             remarks[j] = remarks[j].strip()
-            quality[j] = 1;
             idNumber[j] = idNumber[j].strip()
 
             idNumber[j] = (re.findall("\d+", idNumber[j]))
-
             remarks[j] = remarks[j].replace('\n', ' ').replace('\r', '')
 
-            print length[j]
-            print country[j]
-            print recordist[j]
-            print date[j]
-            print time[j]
-            print country[j]
-            print location[j]
-            print elevation[j]
-            print song_type[j]
-            print remarks[j]
-            print quality[j]
-            print idNumber[j][0]
+            # Takes out the part of quality which is an integer
+            x = str(get_quality[0])
+            x = re.sub("\D", "", x)
+            quality.append(x[len(x)-1])
+
 
             try:
                 x.execute("""INSERT INTO emberiza_rustica (name, length, recordist, date, time, country, location, elevation, soundtype, remarks, quality, id) \
-                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-                 (sys.argv[1]+"_"+sys.argv[2], length[j], recordist[j], date[j], time[j], country[j], location[j], elevation[j], song_type[j], remarks[j], quality[j], idNumber[j][0]))
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                (sys.argv[1]+"_"+sys.argv[2], length[j], recordist[j], date[j], time[j], country[j], location[j], elevation[j], song_type[j], remarks[j], quality[j], idNumber[j][0]))
                 conn.commit()
             except TypeError as e:
                 print(e)
                 conn.rollback()
                 print "excetp!"
 
+
             j=j+1;
         i=1;
 
-    conn.close()
+    #conn.close()
     return
 
 if __name__ == '__main__':
