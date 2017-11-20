@@ -74,7 +74,7 @@ def main():
             elevation[j] = elevation[j].strip()
             song_type[j] = song_type[j].strip()
             remarks[j] = remarks[j].strip()
-            quality[j] = "";
+            quality[j] = 1;
             idNumber[j] = idNumber[j].strip()
 
             idNumber[j] = (re.findall("\d+", idNumber[j]))
@@ -95,8 +95,8 @@ def main():
             print idNumber[j][0]
 
             try:
-                x.execute("""INSERT INTO emberiza_rustica columns (name, length, recordist, date, time, country, location, elevation, soundtype, remarks, quality, id) \
-                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                x.execute("""INSERT INTO emberiza_rustica (name, length, recordist, date, time, country, location, elevation, soundtype, remarks, quality, id) \
+                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
                  (sys.argv[1]+"_"+sys.argv[2], length[j], recordist[j], date[j], time[j], country[j], location[j], elevation[j], song_type[j], remarks[j], quality[j], idNumber[j][0]))
                 conn.commit()
             except TypeError as e:
@@ -105,7 +105,6 @@ def main():
                 print "excetp!"
 
             j=j+1;
-            break
         i=1;
 
     conn.close()
