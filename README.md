@@ -6,6 +6,6 @@ It then takes these into a bash script that scrapes xenoCanto for download links
 
 What we want to do next:
 
-  - Fix database query to send features into database in scraping_birds.py
+  - Fix time as varchar in database instead of int since some entries are not int
   - Get quality feature from html class in scraping_birds.py
   - Fix database query to send link to audiofile in the correct id table
