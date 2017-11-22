@@ -8,11 +8,6 @@ import re
 import string
 
 
-### To remove alpha chars from string
-all=string.maketrans('','')
-nodigs=all.translate(all, string.digits)
-
-
 ### Connect to database at localhost.
 conn = MySQLdb.connect(host= "localhost",
                   user="root",
@@ -93,16 +88,14 @@ def main():
         idNumber[j] = (re.findall("\d+", idNumber[j]))
         remarks[j] = remarks[j].replace('\n', ' ').replace('\r', '')
 
-        # check if valid time
-        if time[j] == "xx:xx":
-            time[j] = "838:59:59"
-        if time[j] == "?":
-            time[j] = "838:59:59"
+        # Checks if these entries are not numeric, otherwise 595959 is used.
+        time[j] = check_entries(time[j])
+        length[j] = check_entries(length[j])
+        elevation[j] = check_entries(elevation[j])
+        quality[j] = check_entries(quality[j])
+        idNumber[j] = check_entries(idNumber[j])
 
-        # Need to validate elevation as well!
-        #if elevation[j] == "?":
-        #    elevation[j] = "NULL
-
+        print length[j]
         try:
             #mysqlQuery = "INSERT INTO emberiza_rustica (name, length, recordist, date, time, country, location, elevation, soundtype, remarks, quality, id) \
             #VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" % (name, length[j], recordist[j], date[j], time[j], country[j], location[j], elevation[j], song_type[j], remarks[j], quality[j], idNumber[j][0]);
@@ -120,6 +113,18 @@ def main():
 
     conn.close()
     return
+
+# Function to check if the input variable only contains numbers.
+def check_entries(are_uint):
+
+    x = str(are_uint)
+    x = re.sub("\D", "", x)
+    if(x == ""):
+        are_uint="595959"
+        return are_uint
+    else:
+        return are_uint
+
 
 if __name__ == '__main__':
     main()
