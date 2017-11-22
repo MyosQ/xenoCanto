@@ -6,7 +6,5 @@ It then takes these into a bash script that scrapes xenoCanto for download links
 
 What we want to do next:
 
-  - Fix that all integers that come as char instead be converted to standard integer of choice "595959"
-  - Fix time as varchar in database instead of int since some entries are not int
   - Fix database query to send link to audiofile in the correct id table
   - Vulnerable for sql injection (for example: can put script in remarks)
