@@ -37,9 +37,9 @@ def main():
         allRows.append(tr)
 
     # Entries of each row. Name is not needed (obviously)
-    length = [];    recordist = []; date = [];  time = [];
-    country = [];   location = [];  elevation= [];  song_type = [];
-    remarks = [];   quality = [];   idNumber = [];
+#    length = [];    recordist = []; date = [];  time = [];
+#    country = [];   location = [];  elevation= [];  song_type = [];
+#    remarks = [];   quality = [];   idNumber = [];
 
     j=0;
     iteratingAllRows = iter(allRows)
@@ -50,50 +50,55 @@ def main():
         columns = row.find_all('td')
 
         # Extract the text in each column
-        length.append(columns[2].get_text())
-        recordist.append(columns[3].get_text())
-        date.append(columns[4].get_text())
-        time.append(columns[5].get_text())
-        country.append(columns[6].get_text())
-        location.append(columns[7].get_text())
-        elevation.append(columns[8].get_text())
-        song_type.append(columns[9].get_text())
-        remarks.append(columns[10].get_text())
-        idNumber.append(columns[12].get_text())
+        length = (columns[2].get_text())
+        recordist=(columns[3].get_text())
+        date=(columns[4].get_text())
+        time=(columns[5].get_text())
+        country=(columns[6].get_text())
+        location=(columns[7].get_text())
+        elevation=(columns[8].get_text())
+        song_type=(columns[9].get_text())
+        remarks=(columns[10].get_text())
+        idNumber=(columns[12].get_text())
 
         # Quality is special
         # Gets all with class selected
         get_quality = (row.find_all(lambda tag: tag.name == 'li' and tag.get('class') == ['selected']))
         # Takes out the part of quality which is an integer
-        x = str(get_quality[0])
+        x = str(get_quality)
         x = re.sub("\D", "", x)
-        quality.append(x[len(x)-1])
+        if(x==""):
+            quality = 0
+        else:
+            quality = x[len(x)-1]
 
 
         # strip newLines and tabs
-        length[j] = length[j].strip()
-        country[j] = country[j].strip()
-        remarks[j] = remarks[j].strip()
-        recordist[j] = recordist[j].strip()
-        date[j] = date[j].strip()
-        time[j] = time[j].strip()
-        country[j] = country[j].strip()
-        location[j] = location[j].strip()
-        elevation[j] = elevation[j].strip()
-        song_type[j] = song_type[j].strip()
-        remarks[j] = remarks[j].strip()
-        idNumber[j] = idNumber[j].strip()
+        length = length.strip()
+        country = country.strip()
+        remarks = remarks.strip()
+        recordist = recordist.strip()
+        date = date.strip()
+        time = time.strip()
+        country = country.strip()
+        location = location.strip()
+        elevation = elevation.strip()
+        song_type = song_type.strip()
+        remarks = remarks.strip()
+        idNumber = idNumber.strip()
 
         # Further remove blanklines and tabs
-        idNumber[j] = (re.findall("\d+", idNumber[j]))
-        remarks[j] = remarks[j].replace('\n', ' ').replace('\r', '')
+        idNumber = (re.findall("\d+", idNumber))
+        remarks = remarks.replace('\n', ' ').replace('\r', '')
 
         # Checks if these entries are not numeric, otherwise 595959 is used.
-        time[j] = check_entries(time[j])
-        length[j] = check_entries(length[j])
-        elevation[j] = check_entries(elevation[j])
-        quality[j] = check_entries(quality[j])
-        idNumber[j] = check_entries(idNumber[j])
+        time = check_entries(time)
+        length = check_entries(length)
+        elevation = check_entries(elevation)
+        quality = check_entries(quality)
+        idNumber = check_entries(idNumber)
+        date = check_entries(date)
+        print remarks
 
         #print length[j]
         #print name
@@ -104,7 +109,7 @@ def main():
             commandBeginning = "INSERT INTO %s " % name
             SQLquery = commandBeginning+"(name, length, recordist, date, time, country, location, elevation, soundtype, remarks, quality, id) \
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-            data = (name, length[j], recordist[j], date[j], time[j], country[j], location[j], elevation[j], song_type[j], remarks[j], quality[j], idNumber[j][0])
+            data = (name, length, recordist, date, time, country, location, elevation, song_type, remarks, quality, idNumber[0])
             cursor.execute(SQLquery, data);
             #print SQLquery
             #break
@@ -115,6 +120,8 @@ def main():
         except TypeError as e:
             print(e)
             db.rollback()
+
+
 
         j=j+1;
 
@@ -128,9 +135,11 @@ def check_entries(are_uint):
     x = str(are_uint)
     x = re.sub("\D", "", x)
     if(x == ""):
+        # Debug value
         are_uint="595959"
         return are_uint
     elif(x == "00000000"):
+        # Used to debug
         are_uint="1746-12-24"
         return are_uint
     else:
