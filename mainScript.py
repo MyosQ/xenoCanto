@@ -6,8 +6,10 @@ conn = MySQLdb.connect(host= "localhost",
                   passwd="password",
                   db="birds")
 
+birdFirstName = "emberiza"
+birdSecondName = "rustica"
 
-proc = subprocess.Popen(['./getDownloadExtensions.sh', 'emberiza', 'rustica'], stdout=subprocess.PIPE)
+proc = subprocess.Popen(['./getDownloadExtensions.sh', birdFirstName, birdSecondName], stdout=subprocess.PIPE)
 allHyperSoundLinks = proc.stdout.read()
 
 
@@ -17,7 +19,7 @@ linkList.pop()
 b = []
 
 for i in range(0,len(linkList)):
-    filename = "/Users/Frej/birdAudioFiles/emberiza-rustica_%d.mp3" %(i)
+    filename = "/Users/Frej/birdAudioFiles/%s-%s_%d.mp3" %(birdFirstName, birdSecondName, i)
     proc = subprocess.Popen(['curl', '-Lo', filename, linkList[i]], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     b.append(re.findall("\d+", linkList[i]))
 

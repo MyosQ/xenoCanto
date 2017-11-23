@@ -95,14 +95,22 @@ def main():
         quality[j] = check_entries(quality[j])
         idNumber[j] = check_entries(idNumber[j])
 
-        print length[j]
+        #print length[j]
+        #print name
         try:
             #mysqlQuery = "INSERT INTO emberiza_rustica (name, length, recordist, date, time, country, location, elevation, soundtype, remarks, quality, id) \
             #VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, '%s', '%s', %d, %d)" % (name, length[j], recordist[j], date[j], time[j], country[j], location[j], int(elevation[j]), song_type[j], remarks[j], int(quality[j]), int(idNumber[j][0]));
             #cursor.execute(mysqlQuery);
-            cursor.execute("""INSERT INTO %s (name, length, recordist, date, time, country, location, elevation, soundtype, remarks, quality, id) \
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-            (name, name, length[j], recordist[j], date[j], time[j], country[j], location[j], elevation[j], song_type[j], remarks[j], quality[j], idNumber[j][0]))
+            commandBeginning = "INSERT INTO %s " % name
+            SQLquery = commandBeginning+"(name, length, recordist, date, time, country, location, elevation, soundtype, remarks, quality, id) \
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            data = (name, length[j], recordist[j], date[j], time[j], country[j], location[j], elevation[j], song_type[j], remarks[j], quality[j], idNumber[j][0])
+            cursor.execute(SQLquery, data);
+            #print SQLquery
+            #break
+            #cursor.execute(commandBeginning + """(name, length, recordist, date, time, country, location, elevation, soundtype, remarks, quality, id) \
+            #VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+            #(name, name, length[j], recordist[j], date[j], time[j], country[j], location[j], elevation[j], song_type[j], remarks[j], quality[j], idNumber[j][0]))
             db.commit()
         except TypeError as e:
             print(e)
