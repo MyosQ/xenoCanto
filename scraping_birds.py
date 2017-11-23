@@ -7,13 +7,13 @@ import MySQLdb
 import re
 import string
 
+# Connect to database at localhost.
+db = MySQLdb.connect(host= "localhost", user="root", passwd="password", db="birds")
 
-### Connect to database at localhost.
-conn = MySQLdb.connect(host= "localhost",
-                  user="root",
-                  passwd="password",
-                  db="birds")
-xConn = conn.cursor()
+# prepare a cursor object using cursor() method
+cursor = db.cursor()
+
+
 
 
 ### Main
@@ -98,20 +98,20 @@ def main():
         print length[j]
         try:
             #mysqlQuery = "INSERT INTO emberiza_rustica (name, length, recordist, date, time, country, location, elevation, soundtype, remarks, quality, id) \
-            #VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" % (name, length[j], recordist[j], date[j], time[j], country[j], location[j], elevation[j], song_type[j], remarks[j], quality[j], idNumber[j][0]);
-            #xConn.execute(mysqlQuery);
-            xConn.execute("""INSERT INTO emberiza_rustica (name, length, recordist, date, time, country, location, elevation, soundtype, remarks, quality, id) \
+            #VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, '%s', '%s', %d, %d)" % (name, length[j], recordist[j], date[j], time[j], country[j], location[j], int(elevation[j]), song_type[j], remarks[j], int(quality[j]), int(idNumber[j][0]));
+            #cursor.execute(mysqlQuery);
+            cursor.execute("""INSERT INTO %s (name, length, recordist, date, time, country, location, elevation, soundtype, remarks, quality, id) \
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-            (name, length[j], recordist[j], date[j], time[j], country[j], location[j], elevation[j], song_type[j], remarks[j], quality[j], idNumber[j][0]))
-            conn.commit()
+            (name, name, length[j], recordist[j], date[j], time[j], country[j], location[j], elevation[j], song_type[j], remarks[j], quality[j], idNumber[j][0]))
+            db.commit()
         except TypeError as e:
             print(e)
-            conn.rollback()
+            db.rollback()
 
         j=j+1;
 
 
-    conn.close()
+    db.close()
     return
 
 # Function to check if the input variable only contains numbers.

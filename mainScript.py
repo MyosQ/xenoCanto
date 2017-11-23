@@ -3,7 +3,7 @@ import subprocess
 import MySQLdb
 conn = MySQLdb.connect(host= "localhost",
                   user="root",
-                  passwd="ihoco",
+                  passwd="password",
                   db="birds")
 
 
