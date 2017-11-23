@@ -130,6 +130,9 @@ def check_entries(are_uint):
     if(x == ""):
         are_uint="595959"
         return are_uint
+    elif(x == "00000000"):
+        are_uint="1746-12-24"
+        return are_uint
     else:
         return are_uint
 
