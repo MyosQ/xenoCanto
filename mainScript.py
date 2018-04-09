@@ -19,14 +19,13 @@ linkList.pop()
 b = []
 
 for i in range(0,len(linkList)):
-    filename = "/Users/Frej/birdAudioFiles/%s-%s_%d.mp3" %(birdFirstName, birdSecondName, i)
+    filename = "/Users/Newera/birdAudioFiles/%s-%s_%d.mp3" %(birdFirstName, birdSecondName, i)
     proc = subprocess.Popen(['curl', '-Lo', filename, linkList[i]], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     b.append(re.findall("\d+", linkList[i]))
 
 
 for i in range(0,len(linkList)-1):
-    pass
-    #print b[i][0]
+    print b[i]
 
 
     #try:

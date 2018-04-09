@@ -81,7 +81,7 @@ def main():
         date = date.strip()
         time = time.strip()
         country = country.strip()
-        location = location.strip()
+        location = location.encode('utf-8').strip()
         elevation = elevation.strip()
         song_type = song_type.strip()
         remarks = remarks.strip()
@@ -98,28 +98,32 @@ def main():
         quality = check_entries(quality)
         idNumber = check_entries(idNumber)
         date = check_entries(date)
-        print remarks
 
+        #print remarks
+        print location
+        print length
+        print name
         #print length[j]
         #print name
-        try:
+
+        #try:
             #mysqlQuery = "INSERT INTO emberiza_rustica (name, length, recordist, date, time, country, location, elevation, soundtype, remarks, quality, id) \
             #VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, '%s', '%s', %d, %d)" % (name, length[j], recordist[j], date[j], time[j], country[j], location[j], int(elevation[j]), song_type[j], remarks[j], int(quality[j]), int(idNumber[j][0]));
             #cursor.execute(mysqlQuery);
-            commandBeginning = "INSERT INTO %s " % name
-            SQLquery = commandBeginning+"(name, length, recordist, date, time, country, location, elevation, soundtype, remarks, quality, id) \
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-            data = (name, length, recordist, date, time, country, location, elevation, song_type, remarks, quality, idNumber[0])
-            cursor.execute(SQLquery, data);
+        commandBeginning = "INSERT INTO %s " % name;
+        SQLquery = commandBeginning+"(name, length, recordist, date, time, country, location, elevation, soundtype, remarks, quality, id) \
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)";
+        data = (name, length, recordist, date, time, country, location, elevation, song_type, remarks, quality, idNumber[0]);
+        cursor.execute(SQLquery, data);
             #print SQLquery
             #break
             #cursor.execute(commandBeginning + """(name, length, recordist, date, time, country, location, elevation, soundtype, remarks, quality, id) \
             #VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
             #(name, name, length[j], recordist[j], date[j], time[j], country[j], location[j], elevation[j], song_type[j], remarks[j], quality[j], idNumber[j][0]))
-            db.commit()
-        except TypeError as e:
-            print(e)
-            db.rollback()
+        #    db.commit()
+        #except TypeError as e:
+        #    print(e)
+        #    db.rollback()
 
 
 

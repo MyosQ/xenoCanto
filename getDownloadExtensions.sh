@@ -14,6 +14,8 @@ birdSecondName=$2 #Secondname
 numOfPages=`curl http://www.xeno-canto.org/species/$birdFirstName-$birdSecondName | grep "href=\"?pg" |\
  tail -2 | head -1 | sed 's/.*<li>\([^-]*\)<\/a><\/li>.*/\1/' | sed 's/.*>\([^-]*\)/\1/'`
 
+echo $numOfPages
+
 # loop through each page and get the download-extension
 baseName="www.xeno-canto.org"
 for page in `seq 1 $numOfPages`;
@@ -22,9 +24,9 @@ do
    | grep download=* | cut -f 3 -d '<' | cut -f 3 -d '=' | cut -c 2- | rev | cut -c 3- | rev`
    extensions=(${extensions[@]})
 
-   for i in `seq 1 ${#extensions[@]}`;
+   for i in `seq 0 ${#extensions[@]}`;
    do
-      echo $baseName"${extensions[i-1]}"
+      echo $baseName"${extensions[i]}"
    done
    unset extensions
 done
